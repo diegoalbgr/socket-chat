@@ -12,36 +12,45 @@ var usuario = {
   sala: params.get("sala"),
 };
 
-// ON: escuchar procesos.
-
 socket.on("connect", function () {
   console.log("Conectado al servidor");
 
   socket.emit("entrarChat", usuario, function (resp) {
-    console.log("Usuarios conectados: ");
-    console.log(resp);
+    //console.log('Usuarios conectados', resp);
+
+    renderizarUsuarios(resp);
   });
 });
 
+// escuchar
 socket.on("disconnect", function () {
   console.log("Perdimos conexión con el servidor");
 });
 
+// Enviar información
+// socket.emit('crearMensaje', {
+//     nombre: 'Fernando',
+//     mensaje: 'Hola Mundo'
+// }, function(resp) {
+//     console.log('respuesta server: ', resp);
+// });
+
+// Escuchar información
 socket.on("crearMensaje", function (mensaje) {
-  console.log("Servidor: ");
-
-  console.log(mensaje);
+  console.log("Servidor:", mensaje);
+  renderizarMensajes(mensaje, false);
+  scrollBottom();
 });
 
-//Escuchar cambios de usuarios
-//Cuando un usuario entra o sale del chat
-
-socket.on("listaPersona", function (usuarios) {
-  console.log(usuarios);
+// Escuchar cambios de usuarios
+// cuando un usuario entra o sale del chat
+socket.on("listaPersona", function (personas) {
+  //Cuando hay cambios en las listas de las personas, salen o entran.
+  console.log(personas);
+  renderizarUsuarios(personas);
 });
 
+// Mensajes privados
 socket.on("mensajePrivado", function (mensaje) {
-  console.log("Mensaje privado: ");
-
-  console.log(mensaje);
+  console.log("Mensaje Privado:", mensaje);
 });
